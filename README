@@ -2,19 +2,13 @@ watch-less is a simple command line tool that will watch a directory tree and ou
 
 I recomend installing globally for ease of use.
 
-[code]
     sudo npm install -g watch-less
-[/code]
 
 using it is as simple as:
 
-[code]
     watch-less
-[/code]
 
 to see various options use
 
-[code]
     watch-less --help
-[/code]
 
