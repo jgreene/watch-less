@@ -1,0 +1,20 @@
+watch-less is a simple command line tool that will watch a directory tree and output compiled a .css file whenever a .less file is changed.
+
+I recomend installing globally for ease of use.
+
+[code]
+    sudo npm install -g watch-less
+[/code]
+
+using it is as simple as:
+
+[code]
+    watch-less
+[/code]
+
+to see various options use
+
+[code]
+    watch-less --help
+[/code]
+
