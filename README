@@ -1,4 +1,4 @@
-watch-less is a simple command line tool that will watch a directory tree and output compiled a .css file whenever a .less file is changed.
+watch-less is a simple command line tool that will watch a directory tree and output a compiled .css file whenever a .less file is changed.
 
 I recomend installing globally for ease of use.
 
