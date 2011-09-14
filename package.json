@@ -5,6 +5,10 @@
     "bin" : {
         "watch-less" : "cli.js"
     },
+    "repository" : {
+        "type" : "git",
+        "url" : "https://github.com/jgreene/watch-less"
+    },
     "keywords" : [
         "less",
         "css",
