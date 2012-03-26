@@ -1,6 +1,6 @@
 {
     "name" : "watch-less",
-    "version" : "0.0.2",
+    "version" : "0.0.3",
     "description" : "Watches your .less files recursively and auto-compiles them.",
     "bin" : {
         "watch-less" : "cli.js"
