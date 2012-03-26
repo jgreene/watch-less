@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 var fs = require('fs');
-var sys = require('sys');
+var util = require('util');
 var path = require('path');
 var walk = require('walk');
 var less = require('less');
@@ -76,10 +76,10 @@ var parseLessFile = function(input, output){
                 try {
                     var css = tree.toCSS({ compress: options.compress });
                     if (output) {
-                        fd = fs.openSync(output, "w");
+                        var fd = fs.openSync(output, "w");
                         fs.writeSync(fd, css, 0, "utf8");
                     } else {
-                        sys.print(css);
+                        util.print(css);
                     }
                 } catch (e) {
                     less.writeError(e, options);
