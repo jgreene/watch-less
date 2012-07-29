@@ -17,6 +17,10 @@ var argv = require('optimist')
       alias: 'd',
       desc: 'Define the root directory to watch, if this is not defined the program will use the current working directory.'
     })
+    .option('destination', {
+      alias: 't',
+      desc: 'Define the destination directory, if this is not defined the program will use the current working directory.'
+    })
     .option('extension', {
         alias: 'e',
         desc: 'Sets the extension of the files that will be generated.  Defaults to .less.css'
@@ -40,6 +44,8 @@ var argv = require('optimist')
     }).argv;
 
 var rootDirectory = argv.directory != null ? argv.directory : process.cwd();
+
+var destinationDirectory = argv.destination != null ? argv.destination : rootDirectory;
 
 var extension = argv.extension != null ? argv.extension[0] == '.' ? argv.extension : '.' + argv.extension : '.less.css'
 
@@ -100,7 +106,7 @@ walker.on('directories', function(root, dirStatsArray, next) {
 walker.on('file', function(root, fileStats, next) {
     if(/.*\.(less)$/.test(fileStats.name)){
         var filePath = path.resolve(root, fileStats.name);
-        var newPath = filePath.slice(0, filePath.length - 5) + extension;
+        var newPath = destinationDirectory + '/' + fileStats.name.slice(0, fileStats.name.length - 5) + extension;        
 
         fs.watchFile(filePath, function(curr, prev){
             console.log("updating: " + newPath);
