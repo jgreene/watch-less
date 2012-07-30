@@ -106,7 +106,7 @@ walker.on('directories', function(root, dirStatsArray, next) {
 walker.on('file', function(root, fileStats, next) {
     if(/.*\.(less)$/.test(fileStats.name)){
         var filePath = path.resolve(root, fileStats.name);
-        var newPath = path.resolve(destinationDirectory + '/' + fileStats.name.slice(0, fileStats.name.length - 5) + extension);
+        var newPath = path.resolve(destinationDirectory, fileStats.name.slice(0, fileStats.name.length - 5) + extension);
 
         fs.watchFile(filePath, function(curr, prev){
             console.log("updating: " + newPath);
