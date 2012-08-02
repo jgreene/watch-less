@@ -5,6 +5,7 @@ var util = require('util');
 var path = require('path');
 var walk = require('walk');
 var less = require('less');
+var mkdirp = require('mkdirp');
 
 
 var argv = require('optimist')
@@ -43,6 +44,8 @@ var argv = require('optimist')
     }).argv;
 
 var rootDirectory = argv.directory != null ? argv.directory : process.cwd();
+var outputDirectory = argv.output ? argv.output : rootDirectory;
+mkdirp.sync(outputDirectory);
 
 var extension = argv.extension != null ? argv.extension[0] == '.' ? argv.extension : '.' + argv.extension : '.less.css'
 
@@ -101,12 +104,11 @@ walker.on('directories', function(root, dirStatsArray, next) {
 });
 
 walker.on('file', function(root, fileStats, next) {
-    var output = argv.output ? argv.output : root;
     if(/.*\.(less)$/.test(fileStats.name)){
         var fileName = fileStats.name;
         var filePath = path.resolve(root, fileName);
         var newName = fileName.slice(0, fileName.length - 5) + extension;
-        var newPath = path.resolve(output, newName);
+        var newPath = path.resolve(outputDirectory, newName);
 
         fs.watchFile(filePath, function(curr, prev){
             console.log("updating: " + newPath);
