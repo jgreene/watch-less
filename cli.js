@@ -33,6 +33,9 @@ var argv = require('optimist')
       alias: 'h',
       desc: 'Show this message'
     })
+    .option('output', {
+      desc: 'Sets the output directory of compiled css files'
+    })
     .check(function(argv) {
       if (argv.help) {
         throw '';
@@ -98,9 +101,12 @@ walker.on('directories', function(root, dirStatsArray, next) {
 });
 
 walker.on('file', function(root, fileStats, next) {
+    var output = argv.output ? argv.output : root;
     if(/.*\.(less)$/.test(fileStats.name)){
-        var filePath = path.resolve(root, fileStats.name);
-        var newPath = filePath.slice(0, filePath.length - 5) + extension;
+        var fileName = fileStats.name;
+        var filePath = path.resolve(root, fileName);
+        var newName = fileName.slice(0, fileName.length - 5) + extension;
+        var newPath = path.resolve(output, newName);
 
         fs.watchFile(filePath, function(curr, prev){
             console.log("updating: " + newPath);
