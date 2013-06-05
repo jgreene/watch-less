@@ -9,13 +9,18 @@ var less = require('less');
 
 var argv = require('optimist')
     .usage('Usage: {OPTIONS}')
-    .wrap(80).option('compress', {
+    .wrap(80)
+    .option('compress', {
       alias: 'c',
       desc: 'Compresses the output'
     })
     .option('directory', {
       alias: 'd',
       desc: 'Define the root directory to watch, if this is not defined the program will use the current working directory.'
+    })
+    .option('output', {
+      alias: 'r',
+      desc: 'CSS Output directory.'
     })
     .option('extension', {
         alias: 'e',
@@ -39,7 +44,8 @@ var argv = require('optimist')
       }
     }).argv;
 
-var rootDirectory = argv.directory != null ? argv.directory : process.cwd();
+var rootDirectory = path.resolve(process.cwd(), argv.directory != null ? argv.directory : '');
+var outputDirectory = argv.output != null ? path.resolve(process.cwd(), argv.output) : rootDirectory;
 
 var extension = argv.extension != null ? argv.extension[0] == '.' ? argv.extension : '.' + argv.extension : '.less.css'
 
@@ -89,6 +95,10 @@ var parseLessFile = function(input, output){
     };
 };
 
+var ouputPath = function(filePath) {
+    return path.resolve(outputDirectory, filePath.slice(rootDirectory.length + 1, filePath.length - 5) + extension);
+}
+
 var walker = walk.walk(rootDirectory, { followLinks: false });
 
 walker.on('directories', function(root, dirStatsArray, next) {
@@ -100,7 +110,7 @@ walker.on('directories', function(root, dirStatsArray, next) {
 walker.on('file', function(root, fileStats, next) {
     if(/.*\.(less)$/.test(fileStats.name)){
         var filePath = path.resolve(root, fileStats.name);
-        var newPath = filePath.slice(0, filePath.length - 5) + extension;
+        var newPath = ouputPath(filePath);
 
         fs.watchFile(filePath, function(curr, prev){
             console.log("updating: " + newPath);
