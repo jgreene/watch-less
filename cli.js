@@ -121,6 +121,9 @@ walker.on('file', function(root, fileStats, next) {
     if(/.*\.(less)$/.test(fileStats.name)){
         var filePath = path.resolve(root, fileStats.name);
 
+        // Compile .less file on startup:
+        compileLessFile(filePath);
+
         fs.watchFile(filePath, function(curr, prev){
             compileLessFile(filePath);
         });
