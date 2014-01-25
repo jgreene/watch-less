@@ -99,6 +99,16 @@ var ouputPath = function(filePath) {
     return path.resolve(outputDirectory, filePath.slice(rootDirectory.length + 1, filePath.length - 5) + extension);
 }
 
+/*
+ * Accepts a path to a .less file and compiles a .css file from it:
+ */
+var compileLessFile = function(lessFile) {
+    var cssFile = ouputPath(lessFile);
+
+    console.log("updating: " + cssFile);
+    fs.readFile(lessFile, 'utf-8', parseLessFile(lessFile, cssFile));
+}
+
 var walker = walk.walk(rootDirectory, { followLinks: false });
 
 walker.on('directories', function(root, dirStatsArray, next) {
@@ -110,11 +120,12 @@ walker.on('directories', function(root, dirStatsArray, next) {
 walker.on('file', function(root, fileStats, next) {
     if(/.*\.(less)$/.test(fileStats.name)){
         var filePath = path.resolve(root, fileStats.name);
-        var newPath = ouputPath(filePath);
+
+        // Compile .less file on startup:
+        compileLessFile(filePath);
 
         fs.watchFile(filePath, function(curr, prev){
-            console.log("updating: " + newPath);
-            fs.readFile(filePath, 'utf-8', parseLessFile(filePath, newPath));
+            compileLessFile(filePath);
         });
     }
     next();
