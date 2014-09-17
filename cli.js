@@ -118,7 +118,7 @@ walker.on('directories', function(root, dirStatsArray, next) {
 });
 
 walker.on('file', function(root, fileStats, next) {
-    if(/.*\.(less)$/.test(fileStats.name)){
+    if(/.*\.(less)$/.test(fileStats.name) && fileStats.name.indexOf("_") != 0){
         var filePath = path.resolve(root, fileStats.name);
 
         // Compile .less file on startup:
