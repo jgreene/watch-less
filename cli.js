@@ -71,33 +71,28 @@ var parseLessFile = function(input, output){
             console.log("lessc: " + e.message);
         }
 
-        new(less.Parser)({
+        var lessOptions = {
             paths: [path.dirname(input)],
             optimization: options.optimization,
             filename: input
-        }).parse(data, function (err, tree) {
-            if (err) {
-                less.writeError(err, options);
-            } else {
-                try {
-                    var css = tree.toCSS({ compress: options.compress });
-                    if (output) {
-                        var fd = fs.openSync(output, "w");
-                        fs.writeSync(fd, css, 0, "utf8");
-                    } else {
-                        util.print(css);
-                    }
-                } catch (e) {
-                    less.writeError(e, options);
+        };
+
+        less.render(data, lessOptions)
+            .then(function(lessOutput){
+                if(lessOutput && lessOutput.css){
+                    var css = lessOutput.css;
+                    var fd = fs.openSync(output, "w");
+                    fs.writeSync(fd, css, 0, "utf8");
                 }
-            }
-        });
+            }, function(error) {
+                less.writeError(error, options);
+            });
     };
 };
 
 var ouputPath = function(filePath) {
     return path.resolve(outputDirectory, filePath.slice(rootDirectory.length + 1, filePath.length - 5) + extension);
-}
+};
 
 /*
  * Accepts a path to a .less file and compiles a .css file from it:
@@ -107,7 +102,7 @@ var compileLessFile = function(lessFile) {
 
     console.log("updating: " + cssFile);
     fs.readFile(lessFile, 'utf-8', parseLessFile(lessFile, cssFile));
-}
+};
 
 var walker = walk.walk(rootDirectory, { followLinks: false });
 

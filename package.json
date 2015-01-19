@@ -1,6 +1,6 @@
 {
     "name" : "watch-less",
-    "version" : "0.0.3",
+    "version" : "0.0.4",
     "description" : "Watches your .less files recursively and auto-compiles them.",
     "bin" : {
         "watch-less" : "cli.js"
@@ -15,9 +15,9 @@
         "watch"
     ],
     "dependencies" : {
-        "less": ">=1.1.1",
+        "less": ">=2.2.0 <3.0.0",
         "optimist" : ">=0.2.6 <0.3",
-        "walk": ">= 2.0.1"
+        "walk": ">= 2.0.1 <3.0.0"
     },
     "author" : {
         "name" : "Justin Greene",
