@@ -106,7 +106,7 @@ var compileLessFile = function(lessFile) {
 
 var walker = walk.walk(rootDirectory, { followLinks: false });
 
-walker.on('directories', function(root, dirStatsArray, next) {
+walker.on('directory', function(root, dirStatsArray, next) {
     if(ignoreList.indexOf(dirStatsArray.name) === -1){
         next();
     }
