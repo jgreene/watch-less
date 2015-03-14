@@ -107,9 +107,13 @@ var compileLessFile = function(lessFile) {
 var walker = walk.walk(rootDirectory, { followLinks: false });
 
 walker.on('directories', function(root, dirStatsArray, next) {
-    if(ignoreList.indexOf(dirStatsArray.name) === -1){
-        next();
-    }
+    dirStatsArray.forEach(function (dirStats, index, arr) {
+        if (ignoreList.indexOf(dirStats.name) !== -1) {
+            arr.splice(index, 1);
+            console.log('Ignoring: ', dirStats.name);
+        }
+    });
+    next();
 });
 
 walker.on('file', function(root, fileStats, next) {
