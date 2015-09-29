@@ -26,6 +26,10 @@ var argv = require('optimist')
         alias: 'e',
         desc: 'Sets the extension of the files that will be generated.  Defaults to .less.css'
     })
+    .option('source_map', {
+        alias: 's',
+        desc: 'Sets the sourcemap of the files that will be generated.  Defaults false'
+    })
     .option('ignore', {
         alias: 'i',
         desc: 'Sets the program to ignore a list of directories by name'
@@ -62,7 +66,8 @@ var ignoreList = (function(){
 
 var options = {
     compress: argv.compress != null,
-    optimization: argv.optimization != null ? parseInt(argv.optimization) : 0
+    optimization: argv.optimization != null ? parseInt(argv.optimization) : 0,
+    sourceMap: argv.source_map != null ? true : false
 };
 
 var parseLessFile = function(input, output){
@@ -71,10 +76,25 @@ var parseLessFile = function(input, output){
             console.log("lessc: " + e.message);
         }
 
+        var sourceMapOptions = {};
+        if (options.sourceMap) {
+            sourceMapOptions.sourceMapInputFilename = input;
+            // its in the same directory, so always just the basename
+            sourceMapOptions.sourceMapOutputFilename = path.basename(output);
+            sourceMapOptions.sourceMapFullFilename = output + ".map";
+            // its in the same directory, so always just the basename
+            sourceMapOptions.sourceMapFilename = path.basename(sourceMapOptions.sourceMapFullFilename);
+            sourceMapOptions.sourceMapBasepath = input ? path.dirname(input) : process.cwd();
+            var pathToMap = path.dirname(sourceMapOptions.sourceMapFullFilename),
+                pathToInput = path.dirname(sourceMapOptions.sourceMapInputFilename);
+            sourceMapOptions.sourceMapRootpath = path.relative(pathToMap, pathToInput);
+        }
+
         var lessOptions = {
             paths: [path.dirname(input)],
             optimization: options.optimization,
-            filename: input
+            filename: input,
+            sourceMap: sourceMapOptions
         };
 
         less.render(data, lessOptions)
