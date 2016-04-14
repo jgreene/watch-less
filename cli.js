@@ -30,6 +30,10 @@ var argv = require('optimist')
         alias: 's',
         desc: 'Sets the sourcemap of the files that will be generated.  Defaults false'
     })
+    .option('files', {
+        alias: 'f',
+        desc: 'Sets a list of files to only be watched. Default is to watch all *.less files.'
+    })
     .option('ignore', {
         alias: 'i',
         desc: 'Sets the program to ignore a list of directories by name'
@@ -59,6 +63,17 @@ var ignoreList = (function(){
             return [argv.ignore]
 
         return argv.ignore;
+    }
+
+    return [];
+})();
+
+var fileList = (function(){
+    if(argv.files != null){
+        if(typeof argv.files === "string")
+            return [argv.files]
+
+        return argv.files;
     }
 
     return [];
@@ -137,7 +152,11 @@ walker.on('directories', function(root, dirStatsArray, next) {
 });
 
 walker.on('file', function(root, fileStats, next) {
-    if(/.*\.(less)$/.test(fileStats.name) && fileStats.name.indexOf("_") != 0){
+    var filePath = path.resolve(root, fileStats.name);
+    var relFilePath = filePath.replace(rootDirectory,'').substring(1); // e.g. "dir/file.less"
+    var is_less = /.*\.(less)$/.test(fileStats.name);
+    var is_in_filelist = fileList.length == 0 || fileList.length > 0 && fileList.indexOf(relFilePath) >= 0;
+    if( is_in_filelist && is_less && fileStats.name.indexOf("_") != 0){
         var filePath = path.resolve(root, fileStats.name);
 
         // Compile .less file on startup:
