@@ -103,6 +103,10 @@ var parseLessFile = function(input, output){
                     var css = lessOutput.css;
                     var fd = fs.openSync(output, "w");
                     fs.writeSync(fd, css, 0, "utf8");
+                    if(lessOutput.map){
+                      var fd_map = fs.openSync(output + ".map", "w");
+                      fs.writeSync(fd_map, lessOutput.map, 0, "utf8");
+                    }
                 }
             }, function(error) {
                 less.writeError(error, options);
