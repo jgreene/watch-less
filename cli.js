@@ -131,12 +131,15 @@ var compileLessFile = function(lessFile) {
 var walker = walk.walk(rootDirectory, { followLinks: false });
 
 walker.on('directories', function(root, dirStatsArray, next) {
-    dirStatsArray.forEach(function (dirStats, index, arr) {
-        if (ignoreList.indexOf(dirStats.name) !== -1) {
-            arr.splice(index, 1);
-            console.log('Ignoring: ', dirStats.name);
+    var dirsCopy = dirStatsArray.concat();
+
+    // Remove ignored directories from dirStatsArray
+    for(var directory of dirsCopy)
+    {
+        if(ignoreList.indexOf(directory.name) !== -1){
+            dirStatsArray.splice(dirStatsArray.indexOf(directory), 1);
         }
-    });
+    }
     next();
 });
 
